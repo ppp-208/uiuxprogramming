@@ -7,43 +7,85 @@
 </head>
 
 <body>
+  <!-- 
+    사용자: 매일 할일을 체계적으로 기록할사람
+    목적: 매일할일을 기록및 체크하여 체계적인활동을 가능하게한다
+    핵심 행동: 할일을 기록하고 마감시한을 설정 완료한것을 체크하기
+    정보 순서: 소개-기능-이용방법-소식받기
+     -->
   <header>
     <h1>매일 할일 서비스</h1>
     <p>할일을 미리 기록하고 관리해 체계적으로 만듭니다.</p>
+
+    <nav aria-label="주요 메뉴">
+      <a href="#about">서비스 소개</a>
+      <a href="#features">주요 기능</a>
+      <a href="#steps">이용방법</a>
+      <a href="#subscribe">할일 소식 받기</a>
+    </nav>
   </header>
+  
+  <main>
+    <section id="about">
+      <h2>서비스소개</h2>
+      <h3>매일 할일을 까먹지않게되는 기록장</h3>
+    
+      <img src="assets/images/service.png" alt="매일 할일 서비스 체크하는 사용자">
+      <p>매일 할일을 기록해 체계적인 하루를 제공합니다</p>
+      
+    </section>
+    <section id="features">
+      <h2>주요 기능</h2>
+      <ul>
+        <li>
+          <h3>할일 추가</h3>
+          <p>매일 할일에 따라 그날 목록에 추가할수있습니다.</p>
+    
+        </li>
+    
+        <li>
+          <h3>할일 완료</h3>
+          <p>매일 할일을 완료한걸 체크하여 관리할수있습니다.</p>
+    
+        </li>
+        
+        <li>
+          <h3>마감시한설정</h3>
+          <p>그일을 해야하는 시간을 기록해 관리할수있습니다.</p>
+          
+        </li>
+      </ul>
+      
+    </section>
+    <section id="steps">
+      <h2>이용 방법</h2>
+      <ol>
+        <li>할일을 입력창에 입력합니다</li>
+        <li>등록한 할일을 확인 그리고 마감시한을설정해 우선순위를 정합니다</li>
+        <li>완료한 일은 체크하면서 진행상황을 확인합니다</li>
+      </ol>
 
-  <h2>서비스소개</h2>
-  <h3>매일 할일을 까먹지않게되는 기록장</h3>
+    </section>
+    <section id="subscribe">
+      <h2>할일 소식 받기</h2>
+      <form>
+        <laber for="email">이메일</laber>
+        <input type="email" id="email" name="email">
+        <button type="submit">할일 소식 신청하기</button>
+    
+      </form>
 
-  <img src="assets/images/service.png" alt="매일 할일 서비스 체크하는 사용자"
+    </section>
+  </main>
+  
+  <footer>
+    <small>© 2026 매일 할일 서비스</small>
+  </footer>
+  
+  
+  
+  
 
-  <h2>주요 기능</h2>
-  <ul>
-    <li>
-      <h3>할일 추가</h3>
-      <p>매일 할일에 따라 그날 목록에 추가할수있습니다.</p>
-
-    </li>
-
-    <li>
-      <h3>할일 완료</h3>
-      <p>매일 할일을 완료한걸 체크하여 관리할수있습니다.</p>
-
-    </li>
-
-    <li>
-      <h3>마감시한설정</h3>
-      <p>그일을 해야하는 시간을 기록해 관리할수있습니다.</p>
-
-    </li>
-  </ul>
-
-  <h2>이용 방법</h2>
-  <ol>
-    <li>할일을 입력창에 입력합니다</li>
-    <li>등록한 할일을 확인 그리고 마감시한을설정해 우선순위를 정합니다</li>
-    <li>완료한 일은 체크하면서 진행상황을 확인합니다</li>
-  </ol>
 </body>
 
 </html>
