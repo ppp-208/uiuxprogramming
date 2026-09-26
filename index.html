@@ -4,6 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <title>나의 첫 웹페이지</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -36,20 +41,20 @@
     </section>
     <section id="features">
       <h2>주요 기능</h2>
-      <ul>
-        <li>
+      <ul class="features-list">
+        <li class="features-card">
           <h3>할일 추가</h3>
           <p>매일 할일에 따라 그날 목록에 추가할수있습니다.</p>
     
         </li>
     
-        <li>
+        <li class="features-card">
           <h3>할일 완료</h3>
           <p>매일 할일을 완료한걸 체크하여 관리할수있습니다.</p>
     
         </li>
         
-        <li>
+        <li class="features-card">
           <h3>마감시한설정</h3>
           <p>그일을 해야하는 시간을 기록해 관리할수있습니다.</p>
           
@@ -66,7 +71,7 @@
       </ol>
 
     </section>
-    <section id="subscribe">
+    <section id="subscribe" class="subscribe-card">
       <h2>할일 소식 받기</h2>
       <form>
         <laber for="email">이메일</laber>
