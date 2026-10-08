@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>나의 첫 웹페이지</title>
+  <title>Daily</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,12 +74,15 @@
     </section>
     <section id="subscribe" class="subscribe-card">
       <h2>할일 소식 받기</h2>
-      <form>
+      <form id="subscribe-form">
         <label for="email">이메일</label>
         <input type="email" id="email" name="email">
-        <button type="submit">할일 소식 신청하기</button>
+        <button id="subscribeButton" type="submit">할일 소식 신청하기</button>
     
       </form>
+      <p id="subscribeMessage" aria-live="polite">
+        이메일을 입력한 뒤 신청해주세요.
+      </p>
 
     </section>
   </main>
@@ -89,7 +92,7 @@
   </footer>
   
   
-  
+  <script src="script.js"></script>
   
 
 </body>
