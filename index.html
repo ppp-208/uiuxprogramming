@@ -42,25 +42,74 @@
     </section>
     <section id="features">
       <h2>주요 기능</h2>
-      <ul class="features-list">
-        <li class="features-card">
-          <h3>할일 추가</h3>
-          <p>매일 할일에 따라 그날 목록에 추가할수있습니다.</p>
-    
-        </li>
-    
-        <li class="features-card">
-          <h3>할일 완료</h3>
-          <p>매일 할일을 완료한걸 체크하여 관리할수있습니다.</p>
-    
-        </li>
-        
-        <li class="features-card">
-          <h3>마감시한설정</h3>
-          <p>그일을 해야하는 시간을 기록해 관리할수있습니다.</p>
+
+      <div class="tabs" role="tablist" aria-label="기능 선택">
+        <button 
+          id="tab-add" 
+          class="tab is-active"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="features-add"
+          data-target="features-add">
+          할일 추가
+        </button>
           
-        </li>
-      </ul>
+        <button
+          id="tab-complete"
+          class="tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="features-complete"
+          data-target="features-complete">
+          할일완료
+        </button>
+
+        <button
+          id="tab-deadline"
+          class="tab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="features-deadline"
+          data-target="features-deadline">
+          마감시한 설정
+        </button>
+      </div>
+
+      <div
+        id="features-add"
+        class="panel is-active"
+        role="tabpanel"
+        aria-labelledby="tab-add">
+        <h3>할일 추가 기능</h3>
+        <p>내 매일 할일을 추가할수있습니다</p>
+      </div>
+
+      <div
+        id="features-complete"
+        class="panel"
+        role="tabpanel"
+        aria-labelledby="tab-complete"
+        hidden>
+        
+        <h3>할일 완료 기능</h3>
+        <p>내가 적어놓은 할일을 완료한것을 기록할수있습니다</p>
+      </div>
+
+      <div
+        id="features-deadline"
+        class="panel"
+        role="tabpanel"
+        aria-labelledby="tab-deadline"
+        hidden>
+        <h3>마감시한 설정 기능</h3>
+        <p>내 매일 할일에 마감시한을 설정할수있습니다</p>
+      </div>
+        
+    
+      
       
     </section>
     <section id="steps">
@@ -72,6 +121,40 @@
       </ol>
 
     </section>
+
+    <section id="event-practice">
+      <h2>할일 관리 설정</h2>
+
+      <div class="event-grid">
+        <article class="event-card">
+          <h3>화면 테마</h3>
+          <button id="themeButton" type="button">다크모드 사용하기</button>
+        </article>
+
+        <article class="event-card">
+          <h3>사용자 이름 입력</h3>
+          <label for="nickname">사용자 이름</label>
+          <input type="text" id="nickname" maxlength="10">
+          <p id="nicknameCount" aria-live="polite">0 / 10</p>
+        </article>
+
+        <article class="event-card">
+          <h3>Daily 이용 동의</h3>
+          <label class="agree-row">
+            <input type="checkbox" id="agreeCheck">
+            Daliy 할일 관리기능에 동의합니다.
+          </label>
+          <p id="agreeMessage" aria-live="polite">
+            동의 후 Daily를 시작할수있습니다.
+          </p>
+          <button id="startButton" type="button" disabled>
+            Daliy 시작하기
+          </button>
+        </article>
+      </div>
+    </section>
+    
+
     <section id="subscribe" class="subscribe-card">
       <h2>할일 소식 받기</h2>
       <form id="subscribe-form">
