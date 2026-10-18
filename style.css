@@ -220,7 +220,7 @@ body.dark{
     background-color: #161616;
 }
 
-body.dark p.
+body.dark p,
 body.dark nav a{
     color: rgb(231, 228, 223);
 }
@@ -349,7 +349,7 @@ body.dark .panel
         align-items: stretch;
     }
 
-    input,
+    input:not([type="checkbox"]),
     button{
         width: 100%;
     }
