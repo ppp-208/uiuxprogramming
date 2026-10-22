@@ -69,13 +69,13 @@ function handleNicknameInput() {
 
 nicknameInput.addEventListener("input", handleNicknameInput);
 
-function handleAgreecharge() {
+function handleAgreeChange() {
     const agreed = agreeCheck.checked;
 
     startButton.disabled = !agreed;
     agreeMessage.textContent = agreed
-        ? "Daily를 시작 할수 있습니다"
-        : "동의 후 Daily를 시작할수 있습니다.";
+        ? "Daily 설정을 시작 할수 있습니다"
+        : "동의 후 Daily 설정을 시작할수 있습니다.";
     
     if (agreed) {
         agreeMessage.classList.add("is-ready");
@@ -86,7 +86,7 @@ function handleAgreecharge() {
 
 }
 
-agreeCheck.addEventListener("change", handleAgreecharge);
+agreeCheck.addEventListener("change", handleAgreeChange);
 
 const tabs = document.querySelectorAll(".tab");
 const panels = document.querySelectorAll(".panel");
@@ -120,4 +120,107 @@ function handleTabClick(envent) {
 
 tabs.forEach(function (tab) {
     tab.addEventListener("click", handleTabClick);
+});
+
+
+const trainingFlow = document.querySelector("#training-flow");
+const flowSteps = trainingFlow.querySelectorAll(".step");
+const progressItems = trainingFlow.querySelectorAll(".progress__item");
+const titleInput = document.querySelector("#presentation-title");
+const titleError = document.querySelector("#title-error");
+const titleNext = document.querySelector("#title-next");
+const deadlineinput = document.querySelector("#deadline");
+const optionPrev = document.querySelector("#option-prev");
+const optionNext = document.querySelector("#option-next");
+const summaryPrev = document.querySelector("#summary-prev");
+const finishButton = document.querySelector("#finish-button");
+const restartButton = document.querySelector("#restart-button");
+const summaryTitle = document.querySelector("#summary-title");
+const summarydeadline = document.querySelector("#summary-deadline");
+
+const formData = {
+    title: "", deadline: ""
+};
+
+function showStep(index) {
+    flowSteps.forEach((step, i) => { step.hidden = i !== index; });
+    progressItems.forEach((item, i) => {
+        item.classList.toggle("is-active", i === index);
+    });
+}
+
+const recordingDialog = document.querySelector("#recording-dialog");
+const recordingCancel = document.querySelector("#recording-cancel");
+const recordingConfirm = document.querySelector("#recording-confirm");
+
+function revokeRecordingAgreement() {
+    agreeCheck.checked = false;
+    trainingFlow.hidden = true;
+    handleAgreeChange();
+    agreeCheck.focus();
+}
+
+startButton.addEventListener("click", () => {
+    if (!agreeCheck.checked) return
+        recordingDialog.showModal();
+});
+
+recordingCancel.addEventListener("click", () => {
+    recordingDialog.close();
+    revokeRecordingAgreement();
+});
+recordingDialog.addEventListener("cancel", revokeRecordingAgreement);
+recordingConfirm.addEventListener("click", () => {
+    if (!agreeCheck.checked) return;
+    recordingDialog.close();
+    trainingFlow.hidden = false;
+    showStep(0);
+    trainingFlow.scrollIntoView({ behavior: "smooth"});
+    titleInput.focus();
+});
+
+function validateTitle() {
+    const value = titleInput.value.trim();
+    if (!value) {
+        titleError.textContent = "매일 할일을 입력해 주세요";
+        titleInput.classList.add("has-error");
+        titleInput.focus();
+        return false;
+    }
+    
+    titleError.textContent ="";
+    titleInput.classList.remove("has-error");
+    formData.title = value;
+    return true;
+}
+
+titleNext.addEventListener("click", () => {
+    if (!validateTitle()) return;
+    showStep(1);
+});
+
+
+
+
+optionPrev.addEventListener("click", () => {showStep(0)});
+optionNext.addEventListener("click", () => {
+    formData.title = titleInput.value.trim();
+    formData.deadline = deadlineinput.value;
+    summaryTitle.textContent = formData.title;
+    summarydeadline.textContent = formData.deadline;
+    showStep(2);
+});
+
+summaryPrev.addEventListener("click", () => showStep(1));
+finishButton.addEventListener("click", () => showStep(3));
+restartButton.addEventListener("click", () => {
+    formData.title = "";
+    formData.deadline = "";
+    titleInput.value = "";
+    deadlineinput.value = "";
+    titleError.textContent = "";
+    titleInput.classList.remove("has-error"); 
+    summaryTitle.textContent = "";
+    summarydeadline.textContent = "마감 날짜 없음";
+    showStep(0);
 });
