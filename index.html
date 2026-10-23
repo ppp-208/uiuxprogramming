@@ -151,6 +151,22 @@
             Daliy 설정 시작하기
           </button>
         </article>
+
+        <article class="event-card">
+          <h3>할일 목록</h3>
+          <button id="open-task-list" type="button">
+            할일 보기
+          </button>
+          <div id="task-list-panel" hidden>
+            <label for="task-calendar-date">날짜 선택</label>
+            <input type="date" id="task-calendar-date">
+            <h4 id="selected-task-date"></h4>
+            <ul id="task-list"></ul>
+            <p id="task-empty-message" hidden>
+              이 날짜에 등록된 기록이 없습니다.
+            </p>
+          </div>
+        </article>
       </div>
     </section>
 

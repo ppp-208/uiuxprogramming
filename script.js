@@ -149,6 +149,73 @@ function showStep(index) {
     });
 }
 
+const taskRecords = [];
+const openTaskListButton = document.querySelector("#open-task-list");
+const taskListPanel = document.querySelector("#task-list-panel");
+const taskCalendarDate = document.querySelector("#task-calendar-date");
+const selectedTaskDate = document.querySelector("#selected-task-date");
+const taskList = document.querySelector("#task-list");
+const taskEmptyMessage = document.querySelector("#task-empty-message");
+
+function handleOpenTaskList() {
+    taskListPanel.hidden = !taskListPanel.hidden;
+
+    if (taskListPanel.hidden) {
+        openTaskListButton.textContent = "할일 보기";
+    } else {
+        openTaskListButton.textContent = "할일 숨기기";
+    }
+}
+
+function renderTaskList() {
+    const selectedDate = taskCalendarDate.value;
+    let count = 0;
+
+    taskList.innerHTML = "";
+
+    if (selectedDate === "") {
+        selectedTaskDate.textContent = "";
+        taskEmptyMessage.hidden = true;
+        return;
+    }
+
+    selectedTaskDate.textContent = selectedDate + "의 할 일";
+
+    taskRecords.forEach(function (task) {
+        if (task.deadline === selectedDate) {
+            const item = document.createElement("li");
+            const label = document.createElement("label");
+            const checkbox = document.createElement("input");
+            const taskText = document.createElement("span");
+
+            checkbox.type = "checkbox";
+            checkbox.checked = task.completed;
+
+            taskText.textContent = task.title;
+            taskText.classList.toggle("task-completed", task.completed);
+
+            checkbox.addEventListener("change", function () {
+                task.completed = checkbox.checked;
+                taskText.classList.toggle("task-completed", task.completed);
+            });
+
+            label.appendChild(checkbox);
+            label.appendChild(taskText);
+            item.appendChild(label);
+            taskList.appendChild(item);
+            count += 1;
+        }
+    });
+
+    taskEmptyMessage.hidden = count > 0;
+}
+
+openTaskListButton.addEventListener("click", handleOpenTaskList);
+taskCalendarDate.addEventListener("change", renderTaskList);
+
+
+
+
 const recordingDialog = document.querySelector("#recording-dialog");
 const recordingCancel = document.querySelector("#recording-cancel");
 const recordingConfirm = document.querySelector("#recording-confirm");
@@ -212,7 +279,17 @@ optionNext.addEventListener("click", () => {
 });
 
 summaryPrev.addEventListener("click", () => showStep(1));
-finishButton.addEventListener("click", () => showStep(3));
+finishButton.addEventListener("click", () => {
+     if (formData.title.trim()) {
+        taskRecords.push({
+            title: formData.title,
+            deadline: formData.deadline,
+            completed: false
+        });
+    }
+    renderTaskList();
+    showStep(3);
+});
 restartButton.addEventListener("click", () => {
     formData.title = "";
     formData.deadline = "";

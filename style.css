@@ -367,6 +367,28 @@ body.dark .training-flow{
     border-color: #080808;
 }
 
+#task-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+#task-list label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#task-list input[type="checkbox"] {
+    width: auto;
+    flex: 0 0 auto;
+    padding: 0;
+}
+
+.task-completed {
+    text-decoration: line-through;
+    color: #8a8a8a;
+}
+
 
 
 
