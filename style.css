@@ -339,6 +339,12 @@ body.dark #recording-dialog {background: #5b5b5b; color: #ffffff;}
 }
 
 .training-flow #presentaiton-title.has-error {border-color: #9d243d;}
+.training-flow form {display: block;}
+.training-flow #title-field.is-valid input[type="text"]{
+    border-color: #18734f;
+    background-color: #f2fbf6;
+}
+
 .training-flow #duration-range {width: 100%; accent-color: #635bff;}
 .training-flow input[type="checkbox"],
 .training-flow input[type="radio"] {

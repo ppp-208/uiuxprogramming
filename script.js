@@ -137,19 +137,54 @@ const finishButton = document.querySelector("#finish-button");
 const restartButton = document.querySelector("#restart-button");
 const summaryTitle = document.querySelector("#summary-title");
 const summarydeadline = document.querySelector("#summary-deadline");
+const taskForm = document.querySelector("#task-form");
+const titleField = document.querySelector("#title-field");
+const titleHelp = document.querySelector("#title-help");
+const titleCount = document.querySelector("#title-count");
+const submitStatus = document.querySelector("#submit-status");
+const alarmOption = document.querySelector("#alarm-option");
+const alarmOptions = document.querySelector("#alarm-options");
+const alarmInputs = document.querySelectorAll('input[name="alarm-time"]');
+const summaryAlarm = document.querySelector("#summary-alarm");
+
+let isSubmitting = false;
+let currentStep = 0;
 
 const formData = {
-    title: "", deadline: ""
+    title: "", deadline: "", alarm: "사용 안 함"
 };
 
 function showStep(index) {
+    currentStep = index;
     flowSteps.forEach((step, i) => { step.hidden = i !== index; });
     progressItems.forEach((item, i) => {
         item.classList.toggle("is-active", i === index);
     });
 }
 
-const taskRecords = [];
+const storageKey = "daily-tasks-v1";
+
+function loadTasks() {
+    try {
+        const stored = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        return Array.isArray(stored) ? stored : [];
+    } catch {
+        return [];
+    }
+}
+
+const taskRecords = loadTasks();
+
+function saveTasks() {
+    try {
+        localStorage.setItem(storageKey, JSON.stringify(taskRecords));
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+
 const openTaskListButton = document.querySelector("#open-task-list");
 const taskListPanel = document.querySelector("#task-list-panel");
 const taskCalendarDate = document.querySelector("#task-calendar-date");
@@ -197,6 +232,7 @@ function renderTaskList() {
             checkbox.addEventListener("change", function () {
                 task.completed = checkbox.checked;
                 taskText.classList.toggle("task-completed", task.completed);
+                saveTasks();
             });
 
             label.appendChild(checkbox);
@@ -246,19 +282,81 @@ recordingConfirm.addEventListener("click", () => {
     titleInput.focus();
 });
 
+function updateTitleExperience() {
+    const length = titleInput.value.length;
+    const valid = titleInput.value.trim().length >= 2;
+    const hasError = titleInput.getAttribute("aria-invalid") === "true";
+
+    titleCount.textContent = length + " / 60자";
+    titleField.classList.toggle("has-error", hasError);
+    titleField.classList.toggle("is-valid", valid && !hasError);
+    titleHelp.textContent = hasError
+        ? "할일 입력 조건을 다시 확인해 주세요."
+        : valid
+            ? "입력 조건을 충족했습니다."
+            : "2자 이상 60자 이하로 입력해주세요.";
+}
+
 function validateTitle() {
     const value = titleInput.value.trim();
     if (!value) {
         titleError.textContent = "매일 할일을 입력해 주세요";
-        titleInput.classList.add("has-error");
+        titleInput.setAttribute("aria-invalid", "true");
+        updateTitleExperience();
         titleInput.focus();
         return false;
     }
-    
-    titleError.textContent ="";
-    titleInput.classList.remove("has-error");
+
+    if (value.length < 2) {
+        titleError.textContent = "할일을 2자 이상 입력해 주세요";
+        titleInput.setAttribute("aria-invalid", "true");
+        updateTitleExperience();
+        titleInput.focus();
+        return false;
+    }
+
+    titleError.textContent = "";
+    titleInput.removeAttribute("aria-invalid");
+    updateTitleExperience();
     formData.title = value;
     return true;
+}
+
+titleInput.addEventListener("input", () => {
+    if (titleInput.getAttribute("aria-invalid") === "true") {
+        validateTitle();
+    } else {
+        updateTitleExperience();
+    }
+});
+updateTitleExperience();
+
+function setSubmitState(state, message) {
+    isSubmitting = state === "loading";
+    trainingFlow.setAttribute("aria-busy", String(isSubmitting));
+    finishButton.disabled = isSubmitting;
+    finishButton.textContent = isSubmitting ? "저장하는 중..." : "설정 완료하기";
+    submitStatus.textContent = message;
+    submitStatus.classList.toggle("is-success", state === "success");
+    submitStatus.classList.toggle("has-error", state === "error");
+}
+
+function syncAlarmOptions() {
+    const open = alarmOption.checked;
+    alarmOption.setAttribute("aria-expanded", String(open));
+    alarmOptions.hidden = !open;
+    alarmInputs.forEach((input) => {
+        input.disabled = !open;
+    });
+}
+
+alarmOption.addEventListener("change", syncAlarmOptions);
+syncAlarmOptions();
+
+function getAlarmText() {
+    if (!alarmOption.checked) return "사용 안 함";
+    const checked = document.querySelector('input[name="alarm-time"]:checked');
+    return checked.value + "일 전 알림";
 }
 
 titleNext.addEventListener("click", () => {
@@ -273,31 +371,72 @@ optionPrev.addEventListener("click", () => {showStep(0)});
 optionNext.addEventListener("click", () => {
     formData.title = titleInput.value.trim();
     formData.deadline = deadlineinput.value;
+    formData.alarm = getAlarmText();
     summaryTitle.textContent = formData.title;
     summarydeadline.textContent = formData.deadline;
+    summaryAlarm.textContent = formData.alarm;
     showStep(2);
 });
 
 summaryPrev.addEventListener("click", () => showStep(1));
-finishButton.addEventListener("click", () => {
-     if (formData.title.trim()) {
-        taskRecords.push({
-            title: formData.title,
-            deadline: formData.deadline,
-            completed: false
-        });
+function saveCurrentTask() {
+    if (!formData.title.trim()) return false;
+
+    taskRecords.push({
+        title: formData.title,
+        deadline: formData.deadline,
+        alarm: formData.alarm,
+        completed: false
+    });
+
+    if (!saveTasks()) {
+        taskRecords.pop();
+        return false;
     }
+
     renderTaskList();
-    showStep(3);
+    return true;
+}
+
+taskForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (currentStep === 0) {
+        if (validateTitle()) showStep(1);
+        return;
+    }
+    if (currentStep !== 2 || isSubmitting) return;
+
+    if (!validateTitle()) {
+        showStep(0);
+        titleInput.focus();
+        return;
+    }
+
+    setSubmitState("loading", "입력한 할일을 저장하고 있습니다.");
+    window.setTimeout(() => {
+        if (!saveCurrentTask()) {
+            setSubmitState("error", "저장하지 못했습니다. 입력 내용을 확인하고 다시 시도해 주세요.");
+            return;
+        }
+        setSubmitState("success", "할일 저장이 완료되었습니다.");
+        showStep(3);
+    }, 600);
 });
+
 restartButton.addEventListener("click", () => {
+    taskForm.reset();
+    syncAlarmOptions();
     formData.title = "";
     formData.deadline = "";
-    titleInput.value = "";
-    deadlineinput.value = "";
+    formData.alarm = "사용 안 함";
     titleError.textContent = "";
-    titleInput.classList.remove("has-error"); 
+    titleInput.removeAttribute("aria-invalid");
+    titleField.classList.remove("is-valid", "has-error");
+    updateTitleExperience();
+    setSubmitState("idle", "");
     summaryTitle.textContent = "";
     summarydeadline.textContent = "마감 날짜 없음";
+    summaryAlarm.textContent = "사용 안 함";
     showStep(0);
 });
