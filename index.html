@@ -23,12 +23,17 @@
     <h1>매일 할일 서비스</h1>
     <p>할일을 미리 기록하고 관리해 체계적으로 만듭니다.</p>
 
-    <nav aria-label="주요 메뉴">
-      <a href="#about">서비스 소개</a>
-      <a href="#features">주요 기능</a>
-      <a href="#steps">이용방법</a>
-      <a href="#subscribe">할일 소식 받기</a>
+    <nav id="main-nav" class="main-nav" aria-label="주요 메뉴">
+      <ul>
+        <li><a href="#about">서비스 소개</a></li>
+        <li><a href="#features">주요 기능</a></li>
+        <li><a href="#steps">이용방법</a></li>
+        <li><a href="#event-practice">할일 설정</a></li>
+        <li><a href="#archive">내 할일</a></li>
+        <li><a href="#subscribe">할일 소식 받기</a></li>
+      </ul>
     </nav>
+    <button id="menu-toggle" class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">메뉴 열기</button>
   </header>
   
   <main>
@@ -254,6 +259,26 @@
    </form> 
 
   </section>
+
+  <section id="archive" class="archive-section">
+    <h2>내 할일 <span id="task-count" class="count-badge">0</span></h2>
+    <p>저장한 할일을 상태별로 모아볼 수 있습니다. 내용은 이 브라우저에만 보관됩니다.</p>
+
+    <div class="plan-filters" role="group" aria-label="할일 표시 범위">
+      <button class="filter-button is-active" type="button" data-filter="all" aria-pressed="true">전체</button>
+      <button class="filter-button" type="button" data-filter="active" aria-pressed="false">진행 중</button>
+      <button class="filter-button" type="button" data-filter="done" aria-pressed="false">완료</button>
+    </div>
+
+  <p id="archive-status" class="archive-status" role="status" aria-live="polite"></p>
+
+  <div id="empty-state" class="empty-state">
+    <h3>아직 저장한 할일이 없어요.</h3>
+    <p>첫 할일을 만들면 이곳에서 다시 볼 수 있습니다.</p>
+    <a href="#event-practice">할일 만들러 가기</a>
+  </div>
+  <ul id="archive-list" class="archive-list" aria-label="저장한 할일" hidden></ul>
+</section>
     
 
     <section id="subscribe" class="subscribe-card">

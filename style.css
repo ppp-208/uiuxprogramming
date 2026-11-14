@@ -45,12 +45,16 @@ footer{
 }
 
 nav{
-    display: flex;
+    margin-top: 24px;
+}
 
-    /*메뉴가 들어갈 자리가 부족하다면 다음줄로 이동*/
+nav ul{
+    display: flex;
     flex-wrap: wrap;
     gap: 24px;
-    margin-top: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 
@@ -58,6 +62,16 @@ nav a{
     color: #5b5b5b;
     font-weight: 700;
     text-decoration: none;
+}
+
+nav a.is-current{
+    color: #4635bf;
+    border-bottom: 3px solid #4635bf;
+}
+
+/*모바일 메뉴 버튼: 넓은 화면에서는 숨김*/
+.menu-toggle{
+    display: none;
 }
 
 h1{
@@ -223,6 +237,11 @@ body.dark{
 body.dark p,
 body.dark nav a{
     color: rgb(231, 228, 223);
+}
+
+body.dark nav a.is-current{
+    color: aquamarine;
+    border-bottom-color: aquamarine;
 }
 
 body.dark .features-card,
@@ -395,6 +414,139 @@ body.dark .training-flow{
     color: #8a8a8a;
 }
 
+.count-badge{
+    display: inline-block;
+    min-width: 32px;
+    padding: 0 8px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #4635bf;
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.plan-filters{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.filter-button{
+    color: #5b5870;
+    background-color: #ffffff;
+    border: 1px solid #deddea;
+}
+
+.filter-button:hover{
+    color: #ffffff;
+    background-color: #4b43db;
+}
+
+.filter-button.is-active{
+    color: #ffffff;
+    background-color: #4635bf;
+    border-color: #4635bf;
+    font-weight: 700;
+}
+
+.archive-status{
+    margin: 0 0 16px;
+    color: #4635bf;
+    font-weight: 700;
+}
+
+.archive-status:empty{
+    display: none;
+}
+
+.empty-state{
+    padding: 40px 24px;
+    border: 1px dashed #9e5b5b;
+    border-radius: 12px;
+    background-color: aliceblue;
+    text-align: center;
+}
+
+.empty-state[hidden],
+.empty-state a[hidden],
+.archive-list[hidden]{
+    display: none;
+}
+
+.archive-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.archive-item{
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #deddea;
+    border-radius: 12px;
+    background-color: aliceblue;
+}
+
+.archive-item.is-done{
+    opacity: .75;
+}
+
+.archive-item label{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.archive-item input[type="checkbox"]{
+    width: auto;
+    flex: 0 0 auto;
+    padding: 0;
+}
+
+.archive-item small{
+    display: block;
+    margin-top: 8px;
+    color: rgb(55, 63, 63);
+}
+
+body.dark .count-badge{
+    background-color: #7c797b;
+    color: aquamarine;
+}
+
+body.dark .filter-button{
+    color: #22c465;
+    background-color: #7c797b;
+    border-color: #5b5b5b;
+}
+
+body.dark .filter-button.is-active{
+    color: #161616;
+    background-color: aquamarine;
+    border-color: aquamarine;
+}
+
+body.dark .archive-status{
+    color: aquamarine;
+}
+
+body.dark .empty-state,
+body.dark .archive-item{
+    background-color: #727070;
+    border-color: #080808;
+}
+
+body.dark .archive-item small,
+body.dark .empty-state a{
+    color: rgb(231, 228, 223);
+}
 
 
 
@@ -422,16 +574,30 @@ body.dark .training-flow{
         font-size: 28px;
     }
 
-    /*가로메뉴를 위에서 아래로배치*/
-    nav{
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
+    .menu-toggle{
+    display: block;
+    margin-top: 16px;
     }
 
-    /*링크 글자 주변에도 누를수있는 여백추가*/
+    .main-nav{
+    display: none;
+    margin-top: 12px;
+    }
+
+    .main-nav.is-open{
+    display: block;
+    }
+
+    /*가로메뉴를 위에서 아래로배치*/
+    nav ul{
+    flex-direction: column;
+    gap: 8px;
+    }
+
+    
     nav a{
         padding: 8px 0;
+        display: block;
     }
 
     /*기능카드를 한열로 배치*/
@@ -484,6 +650,15 @@ body.dark .training-flow{
     .tab{
         width: 100%;
         text-align: left;
+    }
+
+    .plan-filters{
+    flex-direction: row;
+    }
+
+    .filter-button{
+    flex: 1;
+    width: auto;
     }
 
     .training-flow {padding: 20px;}

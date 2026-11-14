@@ -1,4 +1,4 @@
-const seriveName = "Daily"
+seriveName = "Daily"
 let isSubscribed = false;
 let submitCount = 0;
 
@@ -146,6 +146,18 @@ const alarmOption = document.querySelector("#alarm-option");
 const alarmOptions = document.querySelector("#alarm-options");
 const alarmInputs = document.querySelectorAll('input[name="alarm-time"]');
 const summaryAlarm = document.querySelector("#summary-alarm");
+const archiveList = document.querySelector("#archive-list");
+const emptyState = document.querySelector("#empty-state");
+const taskCount = document.querySelector("#task-count");
+const archiveStatus = document.querySelector("#archive-status");
+
+const navLinks = document.querySelectorAll(".main-nav a");
+
+const menuToggle = document.querySelector("#menu-toggle");
+const mainNav = document.querySelector("#main-nav");
+
+const filterButtons = document.querySelectorAll(".filter-button");
+let currentFilter = "all";
 
 let isSubmitting = false;
 let currentStep = 0;
@@ -233,6 +245,7 @@ function renderTaskList() {
                 task.completed = checkbox.checked;
                 taskText.classList.toggle("task-completed", task.completed);
                 saveTasks();
+                renderArchive();
             });
 
             label.appendChild(checkbox);
@@ -249,7 +262,92 @@ function renderTaskList() {
 openTaskListButton.addEventListener("click", handleOpenTaskList);
 taskCalendarDate.addEventListener("change", renderTaskList);
 
+function getVisibleTasks() {
+    return taskRecords.filter(function (task) {
+        if (currentFilter === "all") return true;
+        if (currentFilter === "done") return task.completed;
+        return !task.completed;
+    });
+}
 
+function renderArchive() {
+    const visibleTasks = getVisibleTasks();
+
+    archiveList.replaceChildren();
+    emptyState.hidden = visibleTasks.length !== 0;
+    archiveList.hidden = visibleTasks.length === 0;
+
+    const emptyTitle = emptyState.querySelector("h3");
+    const emptyDescription = emptyState.querySelector("p");
+    const emptyAction = emptyState.querySelector("a");
+
+    if (visibleTasks.length === 0) {
+        // 전체 목록이 비어 있는 경우와 필터 결과만 없는 경우를 구분
+        const filtered = taskRecords.length > 0;
+        emptyTitle.textContent = filtered
+            ? "선택한 상태의 할일이 없어요."
+            : "아직 저장한 할일이 없어요.";
+        emptyDescription.textContent = filtered
+            ? "다른 상태를 선택해 보세요."
+            : "첫 할일을 만들면 이곳에서 다시 볼 수 있습니다.";
+        emptyAction.hidden = filtered;
+    }
+
+    taskCount.textContent = String(visibleTasks.length);
+    taskCount.setAttribute("aria-label", "현재 표시 중인 할일 " + visibleTasks.length + "개");
+
+    visibleTasks.forEach(function (task) {
+        const item = document.createElement("li");
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        const text = document.createElement("span");
+        const meta = document.createElement("small");
+
+        item.className = "archive-item";
+        if (task.completed) item.classList.add("is-done");
+
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+
+        text.textContent = task.title;
+        text.classList.toggle("task-completed", task.completed);
+
+        const deadlineText = task.deadline ? "마감 " + task.deadline : "마감 날짜 없음";
+        meta.textContent = deadlineText + " · " + task.alarm;
+
+        checkbox.addEventListener("change", function () {
+            task.completed = checkbox.checked;
+            const saved = saveTasks();
+            renderArchive();
+            renderTaskList();
+            archiveStatus.textContent = saved
+                ? "'" + task.title + "' 할일을 " + (task.completed ? "완료했습니다." : "진행 중으로 바꿨습니다.")
+                : "상태를 현재 화면에서 바꿨지만, 저장 공간을 사용할 수 없어 새로고침하면 사라질 수 있습니다.";
+        });
+
+        label.appendChild(checkbox);
+        label.appendChild(text);
+        item.appendChild(label);
+        item.appendChild(meta);
+        archiveList.appendChild(item);
+    });
+}
+
+filterButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+        currentFilter = button.dataset.filter;
+
+        filterButtons.forEach(function (item) {
+            const selected = item === button;
+            item.classList.toggle("is-active", selected);
+            item.setAttribute("aria-pressed", String(selected));
+        });
+        archiveStatus.textContent = "";
+        renderArchive();
+    });
+});
+
+renderArchive();
 
 
 const recordingDialog = document.querySelector("#recording-dialog");
@@ -280,6 +378,42 @@ recordingConfirm.addEventListener("click", () => {
     showStep(0);
     trainingFlow.scrollIntoView({ behavior: "smooth"});
     titleInput.focus();
+});
+
+function updateCurrentNav() {
+    const currentHash = window.location.hash;
+
+    navLinks.forEach(function (link) {
+        const current = currentHash
+            ? link.getAttribute("href") === currentHash
+            : link === navLinks[0];
+
+        link.classList.toggle("is-current", current);
+
+        if (current) {
+            link.setAttribute("aria-current", "page");
+        } else {
+            link.removeAttribute("aria-current");
+        }
+    });
+}
+
+window.addEventListener("hashchange", updateCurrentNav);
+updateCurrentNav();
+
+menuToggle.addEventListener("click", function () {
+    const isOpen = mainNav.classList.toggle("is-open");
+
+    menuToggle.textContent = isOpen ? "메뉴 닫기" : "메뉴 열기";
+    menuToggle.setAttribute("aria-expanded", String(isOpen));
+});
+
+navLinks.forEach(function (link) {
+    link.addEventListener("click", function () {
+        mainNav.classList.remove("is-open");
+        menuToggle.textContent = "메뉴 열기";
+        menuToggle.setAttribute("aria-expanded", "false");
+    });
 });
 
 function updateTitleExperience() {
@@ -395,6 +529,8 @@ function saveCurrentTask() {
     }
 
     renderTaskList();
+    renderArchive();
+    archiveStatus.textContent = "'" + formData.title + "' 할일을 저장했습니다.";
     return true;
 }
 
@@ -440,3 +576,7 @@ restartButton.addEventListener("click", () => {
     summaryAlarm.textContent = "사용 안 함";
     showStep(0);
 });
+
+
+
+
