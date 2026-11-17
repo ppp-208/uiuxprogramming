@@ -290,7 +290,9 @@ function renderArchive() {
         emptyDescription.textContent = filtered
             ? "다른 상태를 선택해 보세요."
             : "첫 할일을 만들면 이곳에서 다시 볼 수 있습니다.";
-        emptyAction.hidden = filtered;
+        emptyAction.hidden = false;
+        emptyAction.textContent = filtered ? "전체 보기" : "할일 만들러 가기";
+        emptyAction.href = filtered ? "#archive" : "#event-practice";
     }
 
     taskCount.textContent = String(visibleTasks.length);
@@ -320,6 +322,11 @@ function renderArchive() {
             const saved = saveTasks();
             renderArchive();
             renderTaskList();
+
+            const index = getVisibleTasks().indexOf(task);
+            const boxes = archiveList.querySelectorAll('input[type="checkbox"]');
+            const selectedFilter = document.querySelector('.filter-button[aria-pressed="true"]');
+            (boxes[index] || selectedFilter).focus();
             archiveStatus.textContent = saved
                 ? "'" + task.title + "' 할일을 " + (task.completed ? "완료했습니다." : "진행 중으로 바꿨습니다.")
                 : "상태를 현재 화면에서 바꿨지만, 저장 공간을 사용할 수 없어 새로고침하면 사라질 수 있습니다.";
@@ -342,10 +349,23 @@ filterButtons.forEach(function (button) {
             item.classList.toggle("is-active", selected);
             item.setAttribute("aria-pressed", String(selected));
         });
-        archiveStatus.textContent = "";
         renderArchive();
+
+        const count = getVisibleTasks().length;
+        const filterName = button.textContent.trim();
+        archiveStatus.textContent = count > 0
+            ? filterName + " 할일 " + count + "개가 표시됩니다"
+            : filterName + " 할일이 없습니다. 다른조건을 선택해주세요.";
     });
 });
+
+emptyState.querySelector("a").addEventListener("click", function (event) {
+    if (currentFilter === "all") return;
+    event.preventDefault();
+    const allButton = document.querySelector('[data-filter="all"]');
+    allButton.click();
+    allButton.focus();
+})
 
 renderArchive();
 
@@ -396,6 +416,10 @@ function updateCurrentNav() {
             link.removeAttribute("aria-current");
         }
     });
+
+    const currentLink = document.querySelector('.main-nav a[aria-current="page"]');
+    const pagename = currentLink ? currentLink.textContent.trim() : "홈";
+    document.title = pagename + " | Daily";
 }
 
 window.addEventListener("hashchange", updateCurrentNav);
@@ -407,6 +431,16 @@ menuToggle.addEventListener("click", function () {
     menuToggle.textContent = isOpen ? "메뉴 닫기" : "메뉴 열기";
     menuToggle.setAttribute("aria-expanded", String(isOpen));
 });
+
+document.addEventListener("keydown", function (envet) {
+    if (envet.key !== "Escape" || !mainNav.classList.contains("is-open")) return;
+
+    mainNav.classList.remove("is-open");
+    menuToggle.textContent = "메뉴 열기";
+    menuToggle.setAttribute("aria-expanded", "false");
+})
+
+
 
 navLinks.forEach(function (link) {
     link.addEventListener("click", function () {

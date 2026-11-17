@@ -19,10 +19,14 @@
     핵심 행동: 할일을 기록하고 마감시한을 설정 완료한것을 체크하기
     정보 순서: 소개-기능-이용방법-소식받기
      -->
+  <a class="skip-link" href="#top">
+    본문 바로가기
+  </a>
   <header>
     <h1>매일 할일 서비스</h1>
     <p>할일을 미리 기록하고 관리해 체계적으로 만듭니다.</p>
 
+    <button id="menu-toggle" class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">메뉴 열기</button>
     <nav id="main-nav" class="main-nav" aria-label="주요 메뉴">
       <ul>
         <li><a href="#about">서비스 소개</a></li>
@@ -33,15 +37,14 @@
         <li><a href="#subscribe">할일 소식 받기</a></li>
       </ul>
     </nav>
-    <button id="menu-toggle" class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">메뉴 열기</button>
   </header>
   
-  <main>
+  <main id="top" tabindex="-1">
     <section id="about">
       <h2>서비스소개</h2>
       <h3>매일 할일을 까먹지않게되는 기록장</h3>
     
-      <img src="assets/images/service.png" alt="매일 할일 서비스 체크하는 사용자">
+      <img src="assets/images/service.png" alt="책상위스마트폰에서 할일 체크리스트에 체크한 모습">
       <p>매일 할일을 기록해 체계적인 하루를 제공합니다</p>
       
     </section>

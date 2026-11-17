@@ -7,6 +7,23 @@ body{
     background-color: bisque;
 }
 
+.skip-link{
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    padding: 10px 14px;
+    border:  2px solid #4635bf;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #080808;
+    transform: translateY(-160%);
+}
+
+.skip-link:focus-visible{
+    transform: translateY(0);
+}
+
 header,
 main,
 footer{
@@ -162,7 +179,7 @@ button{
     padding: 12px 18px;
     border: 0;
     border-radius: 10px;
-    color: aquamarine;
+    color: #ffffff;
     background-color: rgb(197, 52, 52);
     cursor: pointer;
     transition: background-color 0.2s, transform 0.2s ease;
@@ -175,7 +192,8 @@ button{
 
 
 button:hover{
-    background-color: rgb(231, 231, 10);
+    color: #ffffff;
+    background-color: rgb(110, 15, 15);
 }
 
 button:focus,
@@ -449,6 +467,13 @@ body.dark .training-flow{
     background-color: #4635bf;
     border-color: #4635bf;
     font-weight: 700;
+}
+
+.main-nav a[aria-current="page"],
+.filter-button[aria-pressed="true"]{
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 6px;
 }
 
 .archive-status{
