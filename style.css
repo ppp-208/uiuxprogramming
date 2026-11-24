@@ -329,6 +329,16 @@ body.dark .subscribe-card{
     display: none;
 }
 
+.tab-status{
+    margin: 0 0 12px;
+    color: #4635bf;
+    font-weight: 700;
+}
+
+body.dark .tab-status{
+    color: aquamarine;
+}
+
 body.dark .tab{
     color: #22c465;
     background-color: #7c797b;

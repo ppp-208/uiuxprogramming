@@ -90,6 +90,7 @@ agreeCheck.addEventListener("change", handleAgreeChange);
 
 const tabs = document.querySelectorAll(".tab");
 const panels = document.querySelectorAll(".panel");
+const tabStatus = document.querySelector("#tab-status");
 
 function resetTabsAndPanels() {
     tabs.forEach(function (tab) {
@@ -111,6 +112,8 @@ function activateTab(clickedTab) {
 
     targetPanel.classList.add("is-active");
     targetPanel.hidden = false;
+
+    tabStatus.textContent = "현재 선택: " + clickedTab.textContent.trim();
 }
 
 function handleTabClick(envent) {
