@@ -26,6 +26,10 @@
     <h1>매일 할일 서비스</h1>
     <p>할일을 미리 기록하고 관리해 체계적으로 만듭니다.</p>
 
+    <a class="sidebar-cta" href="#event-practice">
+      <span aria-hidden="true">+</span>새 할일 만들기
+    </a>
+
     <button id="menu-toggle" class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">메뉴 열기</button>
     <nav id="main-nav" class="main-nav" aria-label="주요 메뉴">
       <ul>
@@ -179,7 +183,10 @@
     </section>
 
     <dialog id = "recording-dialog" aria-labelledby="recording-title" aria-describedby="recording-description">
-      <h2 id="recording-title">Daily 활용 안내</h2>
+      <div class="dialog-top">
+        <h2 id="recording-title">Daily 활용 안내</h2>
+        <button id="recording-close" class="icon-button" type="button" aria-label="Daily 활용 안내 닫기">×</button>
+      </div>
       <p id="recording-description">할 일을 체계적으로 관리하기 위한 기본 설정을 진행합니다. 설정 완료 후 할 일을 기록할 수 있습니다.</p>
       <div class="dialog-actions">
         <button id="recording-cancel" type="button">돌아가기</button>

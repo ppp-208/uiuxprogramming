@@ -270,6 +270,64 @@ function getVisibleTasks() {
     });
 }
 
+function createText(tag, className, content) {
+    const element = document.createElement(tag);
+    element.className = className;
+    element.textContent = content;
+    return element;
+}
+
+function createArchiveItem(task) {
+    const item = document.createElement("li");
+    item.className = task.completed
+        ? "archive-item is-done"
+        : "archive-item";
+
+    const top = document.createElement("div");
+    top.className = "archive-item-top";
+    top.append(createText("span", "task-state", task.completed ? "완료" : "진행 중"));
+
+    const icon = createText("span", "archive-item-icon", "⌁");
+    icon.setAttribute("aria-hidden", "true");
+    item.append(top, icon);
+
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    const text = document.createElement("span");
+    const meta = document.createElement("small");
+
+    checkbox.type = "checkbox";
+    checkbox.checked = task.completed;
+
+    text.textContent = task.title;
+    text.classList.toggle("task-completed", task.completed);
+
+    const deadlineText = task.deadline ? "마감 " + task.deadline : "마감 날짜 없음";
+    meta.textContent = deadlineText + " · " + task.alarm;
+
+    checkbox.addEventListener("change", function () {
+        task.completed = checkbox.checked;
+        const saved = saveTasks();
+        renderArchive();
+        renderTaskList();
+
+        const index = getVisibleTasks().indexOf(task);
+        const boxes = archiveList.querySelectorAll('input[type="checkbox"]');
+        const selectedFilter = document.querySelector('.filter-button[aria-pressed="true"]');
+        (boxes[index] || selectedFilter).focus();
+        archiveStatus.textContent = saved
+            ? "'" + task.title + "' 할일을 " + (task.completed ? "완료했습니다." : "진행 중으로 바꿨습니다.")
+            : "상태를 현재 화면에서 바꿨지만, 저장 공간을 사용할 수 없어 새로고침하면 사라질 수 있습니다.";
+    });
+
+    label.appendChild(checkbox);
+    label.appendChild(text);
+    item.appendChild(label);
+    item.appendChild(meta);
+
+    return item;
+}
+
 function renderArchive() {
     const visibleTasks = getVisibleTasks();
 
@@ -299,44 +357,7 @@ function renderArchive() {
     taskCount.setAttribute("aria-label", "현재 표시 중인 할일 " + visibleTasks.length + "개");
 
     visibleTasks.forEach(function (task) {
-        const item = document.createElement("li");
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input");
-        const text = document.createElement("span");
-        const meta = document.createElement("small");
-
-        item.className = "archive-item";
-        if (task.completed) item.classList.add("is-done");
-
-        checkbox.type = "checkbox";
-        checkbox.checked = task.completed;
-
-        text.textContent = task.title;
-        text.classList.toggle("task-completed", task.completed);
-
-        const deadlineText = task.deadline ? "마감 " + task.deadline : "마감 날짜 없음";
-        meta.textContent = deadlineText + " · " + task.alarm;
-
-        checkbox.addEventListener("change", function () {
-            task.completed = checkbox.checked;
-            const saved = saveTasks();
-            renderArchive();
-            renderTaskList();
-
-            const index = getVisibleTasks().indexOf(task);
-            const boxes = archiveList.querySelectorAll('input[type="checkbox"]');
-            const selectedFilter = document.querySelector('.filter-button[aria-pressed="true"]');
-            (boxes[index] || selectedFilter).focus();
-            archiveStatus.textContent = saved
-                ? "'" + task.title + "' 할일을 " + (task.completed ? "완료했습니다." : "진행 중으로 바꿨습니다.")
-                : "상태를 현재 화면에서 바꿨지만, 저장 공간을 사용할 수 없어 새로고침하면 사라질 수 있습니다.";
-        });
-
-        label.appendChild(checkbox);
-        label.appendChild(text);
-        item.appendChild(label);
-        item.appendChild(meta);
-        archiveList.appendChild(item);
+        archiveList.append(createArchiveItem(task));
     });
 }
 
@@ -390,6 +411,12 @@ recordingCancel.addEventListener("click", () => {
     recordingDialog.close();
     revokeRecordingAgreement();
 });
+
+document.querySelector("#recording-close").addEventListener("click", () => {
+    recordingDialog.close();
+    revokeRecordingAgreement();
+});
+
 recordingDialog.addEventListener("cancel", revokeRecordingAgreement);
 recordingConfirm.addEventListener("click", () => {
     if (!agreeCheck.checked) return;
